@@ -5,6 +5,8 @@
 > router.js: 基于hash的路由库 兼容IE8
 
 #### 使用方式：
+
+
 ```javascript
 > 引入jquery.js 和 routes.conf.js配置文件，该文件可根据业务需求进行定制
 
@@ -13,7 +15,7 @@
 > 入口html中定义视图渲染容器<div class="views" id="views"></div>
 > 子视图渲染容器为：<div class="child-views" id="child-views"></div>
 
-> @Comment string:'$AjmRouter是基于hash封装的路由框架，目前功能：
+> @Comment string:'Router是基于hash封装的路由框架，目前功能：
   1. 可自定义路由路径，
   2. 路由之间可进行参数传递，
   3. 每个路由的业务逻辑在对应配置回调中进行，
@@ -25,4 +27,5 @@
  7. 为了统一，此路由框架集成了jquery, 也可以独立出来单独使用
  8. 后续功能待完善...
 ```
+
  > 已投入使用的项目地址：http://42.51.172.20:8080/mtss-web/src/
