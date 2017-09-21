@@ -22,11 +22,9 @@
   4. 可自定义当前激活路由样式类，
   5. 通过go方法可进行路由的快捷跳转，并携带相关参数
   6. 父子路由配置api接口根地址，其参数在对应link标签参object的格式传入,
-```
-```html
   比如：
-     <a href="#/home” params="{id: 001, username: 'zhuxl', age: 29, gender: 'male'}">Home</a>
-    模板动态参数绑定: <a href="#/home” params="{id: '{{ d.id }}', username: '{{ d.username }}', age: {{ d.age}}, gender: '{{ d.male             }}'}">Home</a>
+     <a href="#/home" params="{id: 001, username: 'zhuxl', age: 29, gender: 'male'}">Home</a>
+    模板动态参数绑定: <a href="#/home" params="{id: '{{ d.id }}', username: '{{ d.username }}', age: {{ d.age}}, gender: '{{ d.male             }}'}">Home</a>
   7. 为了统一，此路由框架集成了jquery, 也可以独立出来单独使用
   8. 后续功能待完善...
 ```
