@@ -463,9 +463,9 @@
             var currentTitle = _path.title;
             var params = _path.params ? _path.params : !1;
             var cb = _path.callback ? _path.callback : !1;
-            var $childViews;
+            var childViews;
             var xhr = null;
-            var $this = this;
+            var _this = this;
             var childRoutes = _path.childRoutes;
 
             /*
@@ -499,16 +499,16 @@
 
             xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function () {
-                var $ajmLinks = $this.getElementByClassName('a', 'ajmLink');
+                var Links = _this.getElementByClassName('a', 'ajmLink');
                 var apiUri = _path.apiUrl ? _path.apiUrl + '?' : '';
                 var pathParams;
 
                 if (xhr.readyState == 4 && xhr.status == 200) {
                     document.title = currentTitle;
 
-                    for (var $ri = 0; $ri < $ajmLinks.length; $ri++) {
-                        if ($ajmLinks[$ri].getAttribute('href').slice(1) === location.hash.slice(1)) {
-                            pathParams = eval("(" + $ajmLinks[$ri].getAttribute('params') + ")");
+                    for (var ri = 0; ri < Links.length; ri++) {
+                        if (Links[ri].getAttribute('href').slice(1) === location.hash.slice(1)) {
+                            pathParams = eval("(" + Links[ri].getAttribute('params') + ")");
                             break;
                         }
                     }
@@ -533,18 +533,18 @@
                             if (local$param && local$param != "undefined") {
                                 html = compileTpl.render($.extend(JSON.parse(local$param), resp));
                             } else {
-                                html = compileTpl.render($.extend($this.$param ? $this.$param : {}, resp));
+                                html = compileTpl.render($.extend(_this.$param ? _this.$param : {}, resp));
                             }
 
                             $(views).html(html);
 
                             if (child === 'uid0') {
 
-                                $childViews = $this.viewContainer.getElementsByTagName('div');
-                                if ($childViews) {
-                                    for (var $c = 0; $c < $childViews.length; $c++) {
-                                        if ($childViews[$c].getAttribute('id') === 'child-views') {
-                                            views = $childViews[$c];
+                                childViews = _this.viewContainer.getElementsByTagName('div');
+                                if (childViews) {
+                                    for (var c = 0; c < childViews.length; c++) {
+                                        if (childViews[c].getAttribute('id') === 'child-views') {
+                                            views = childViews[c];
                                             break;
                                         }
                                     }
@@ -552,16 +552,16 @@
 
 
                                 if (childRoutes) {
-                                    for (var $r = 0; $r < childRoutes.length; $r++) {
-                                        if (childRoutes[$r].path === _child) {
-                                            _path = childRoutes[$r];
-                                            tmpl = childRoutes[$r].url;
+                                    for (var r = 0; r < childRoutes.length; r++) {
+                                        if (childRoutes[r].path === _child) {
+                                            _path = childRoutes[r];
+                                            tmpl = childRoutes[r].url;
                                             break;
                                         }
                                     }
                                 }
 
-                                $this.render(_path, views, tmpl, 'uid1');
+                                _this.render(_path, views, tmpl, 'uid1');
                             }
                         })
                     } else {
@@ -573,7 +573,7 @@
                             if (local$param && local$param != "undefined") {
                                 html = compileTpl.render(JSON.parse(local$param));
                             } else {
-                                html = compileTpl.render($this.$param ? $this.$param : {});
+                                html = compileTpl.render($this.$param ? _this.$param : {});
                             }
                             $(views).html(html);
                         })();
@@ -581,38 +581,38 @@
 
                         if (child === 'uid0') {
 
-                            $childViews = $this.viewContainer.getElementsByTagName('div');
-                            if ($childViews) {
-                                for (var $c = 0; $c < $childViews.length; $c++) {
-                                    if ($childViews[$c].getAttribute('id') === 'child-views') {
-                                        views = $childViews[$c];
+                            childViews = _this.viewContainer.getElementsByTagName('div');
+                            if (childViews) {
+                                for (var c = 0; c < childViews.length; c++) {
+                                    if (childViews[c].getAttribute('id') === 'child-views') {
+                                        views = childViews[c];
                                     }
                                 }
                             }
 
 
                             if (childRoutes) {
-                                for (var $r = 0; $r < childRoutes.length; $r++) {
-                                    if (childRoutes[$r].path === _child) {
-                                        _path = childRoutes[$r];
-                                        tmpl = childRoutes[$r].url;
+                                for (var r = 0; r < childRoutes.length; r++) {
+                                    if (childRoutes[r].path === _child) {
+                                        _path = childRoutes[r];
+                                        tmpl = childRoutes[r].url;
                                     }
                                 }
                             }
 
-                            $this.render(_path, views, tmpl, 'uid1');
+                            _this.render(_path, views, tmpl, 'uid1');
                         }
                     }
 
 
-                    $this.addAnimateHandler(views, 'opacity', 1, function () {
+                    _this.addAnimateHandler(views, 'opacity', 1, function () {
                     });
 
 
                     var timer = setTimeout(function () {
 
                         cb && cb(_path.path, params);
-                        $this.addHighlightHandler(_path);
+                        _this.addHighlightHandler(_path);
                         clearTimeout(timer);
                     }, 0);
 
@@ -627,14 +627,14 @@
 
         },
         go: function (path) {
-            var $this = this;
+            var _this = this;
             +(function () {
                 if (!path.$param || (typeof path.$param === 'object' && Object.prototype.toString.call(path.$param) !== '[object Object]')) {
 
                     return;
                 } else {
 
-                    $this.$param =  path.$param;
+                    _this.$param =  path.$param;
                     localStorage.setItem('$param', JSON.stringify(path.$param));
                 }
 
@@ -663,7 +663,7 @@
          */
         addAnimateHandler: function (obj, attr, target, callback, delay) {
 
-            var $this = this;
+            var _this = this;
             if (attr == 'opacity') {
                 target = target * 100;
             }
@@ -672,7 +672,7 @@
                 var base = Math.floor(Math.random() * 4) + 17;
                 var speed;
 
-                dest = $this.getComputedStyle(obj, attr);
+                dest = _this.getComputedStyle(obj, attr);
                 speed = (target - dest) / base;
                 speed = speed > 0 ? Math.ceil(speed) : Math.floor(speed);
                 if (target === dest) {
@@ -729,7 +729,7 @@
         }
     }
 
-    $AjmRouter.version = '1.0.1';
+    Router.version = '1.0.1';
 
-    return $AjmRouter;
+    return Router;
 }));
