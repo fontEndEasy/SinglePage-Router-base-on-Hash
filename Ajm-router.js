@@ -142,8 +142,8 @@
          */
         initHashAction: function () {
 
-            var $hash = window.location.hash.slice(1);
-            var $ajmRoutes = this.options['AjmRoutes'];
+            var $hash = this.getHash();
+            var $ajmRoutes = this.options['routes'] || [];
             var $len = $ajmRoutes.length;
             var $splitHash = $hash.split('/');
             var $child = $splitHash[2];
@@ -238,6 +238,9 @@
                     }
                 }
             }
+        },
+        getHash: function () {
+	    return location.hash.slice(1);
         },
         getMatch: function (hash, links) {
             var layerTailReg = /\w+\/(\w+)$/g;
