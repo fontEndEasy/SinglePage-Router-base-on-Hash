@@ -62,7 +62,7 @@
 
         this.options = options;
         this.init();
-        this.viewContainer = document.getElementById('ajmViews');
+        this.viewContainer = document.getElementById('views');
         this.$track = [];
     };
 
@@ -142,13 +142,13 @@
          */
         initHashAction: function () {
 
-            var hash = this.getHash();
-            var Routes = this.options['routes'] || [];
-            var len = Routes.length;
+            var hash = window.location.hash.slice(1);
+            var routes = this.options['routes'];
+            var len = routes.length;
             var splitHash = hash.split('/');
             var child = splitHash[2];
             var childViews = this.viewContainer.getElementsByTagName('div');
-            var Links = this.getElementByClassName('a', 'ajmLink');
+            var links = this.getElementByClassName('a', 'ajmLink');
             var childRoutes;
             var childViewContainer;
             var parentpath;
@@ -174,9 +174,9 @@
 
                 if (splitHash.length === 2) {
 
-                    for (var check = 0; check < Routes.length; check++) {
-                        if (Routes[check].path === hash) {
-                            defaultViews = Routes[check].childRoutes;
+                    for (var check = 0; check < routes.length; check++) {
+                        if (routes[check].path === hash) {
+                            defaultViews = routes[check].childRoutes;
                             break;
                         }
                     }
@@ -185,41 +185,41 @@
                         location.hash = hash + defaultViews[0].path;
                     } else {
                         this.viewContainer.style['opacity'] = 0;
-                        this.firstRender(hash, Routes);
+                        this.firstRender(hash, routes);
                     }
 
                 } else {
 
                     if (!this.isContainsChildView(this.viewContainer, 'child-views')) {
 
-                        this.firstRender(hash, Routes, 'uid0', '/' + child);
+                        this.firstRender(hash, routes, 'uid0', '/' + child);
                     } else {
                         this.viewContainer.style['opacity'] = 1;
                         for (var element = 0; element < childViews.length; element++) {
-                            if (childViews[element].getAttribute('id') === 'child-views') {
-                                childViews[element].style.opacity = 0;
-                                childViewContainer = childViews[element];
+                            if ($childViews[element].getAttribute('id') === 'child-views') {
+                                $childViews[element].style.opacity = 0;
+                                $childViewContainer = $childViews[element];
                                 break;
                             }
                         }
                         for (var windex = 0; windex < len; windex++) {
-                            parentpath = Routes[windex].path;
-                            if (Routes[windex].childRoutes) {
-                                childRoutes = Routes[windex].childRoutes;
+                            parentpath = routes[windex].path;
+                            if (routes[windex].childRoutes) {
+                                childRoutes = routes[windex].childRoutes;
                             } else {
                                 continue;
                             }
-                            childRoutes = Routes[windex].childRoutes;
-                            for (var iindex = 0; iindex < childRoutes.length; iindex++) {
+                            childRoutes = routes[windex].childRoutes;
+                            for (var iindex = 0; iindex < childRoutes.length; $iindex++) {
                                 if (parentpath + childRoutes[iindex].path === location.hash.slice(1)) {
-                                    this.childViewContainer = childViewContainer;
+                                    this.$childViewContainer = childViewContainer;
 
-                                    var isMatch = this.getMatch(location.hash, Links);
-                                    if (this.childViewContainer && isMatch) {
+                                    var isMatch = this.getMatch(location.hash, links);
+                                    if (this.$childViewContainer && isMatch) {
 
-                                        this.addHashHandler(childRoutes[iindex], 'uid1', child);
+                                        this.addHashHandler($childRoutes[$iindex], 'uid1', child);
                                     } else {
-                                        this.firstRender(parentpath, Routes, 'uid0', '/' + child);
+                                        this.firstRender($parentpath, $ajmRoutes, 'uid0', '/' + child);
                                     }
 
                                 }
@@ -232,14 +232,12 @@
             if (!hash) {
 
                 for (var i = 0; i < len; i++) {
-                    if (Routes[i].path === '/home') {
-                        this.addHashHandler(Routes[i]);
+                    if (routes[i].path === '/home') {
+                        location.hash = '/home';
+                        this.addHashHandler(routes[i]);
                     }
                 }
             }
-        },
-        getHash: function () {
-	    return location.hash.slice(1);
         },
         getMatch: function (hash, links) {
             var layerTailReg = /\w+\/(\w+)$/g;
@@ -272,13 +270,13 @@
             return isTrue;
         },
 
-        firstRender: function (hash, routes, child, _child) {
+        firstRender: function ($hash, $routes, child, _child) {
 
-            var len = routes.length;
+            var $len = $routes.length;
             // this.viewContainer.style['opacity'] = 0;
-            for (var index = 0; index < len; index++) {
-                if (hash === routes[index].path) {
-                    this.addHashHandler(routes[index], child, _child);
+            for (var $index = 0; $index < $len; $index++) {
+                if ($hash === $routes[$index].path) {
+                    this.addHashHandler($routes[$index], child, _child);
                 }
             }
         },
@@ -290,14 +288,14 @@
          */
         addHashHandler: function (_path, child, _child) {
 
-            var path = _path.path;
-            var this = this;
-            var local;
+            var $path = _path.path;
+            var $this = this;
+            var $local;
             var tmpl = _path.url;
 
             this.addHighlightHandler(_path);
             $local = this.getLocalStorage('route');
-            if (!local) {
+            if (!$local) {
                 this.setLocalStorage(_path.path);
             }
 
@@ -307,13 +305,13 @@
              *
              */
             if (this.beforeEnter && typeof this.beforeEnter === 'function') {
-                this.beforeEnter(local, _path, function (cbpath) {
+                this.beforeEnter($local, _path, function (cbpath) {
                     $this.go(cbpath);
                 }, this.addConfirmHandler);
             } else {
 
                 if (child === 'uid1') {
-                    this.render(_path, this.childViewContainer, tmpl, child);
+                    this.render(_path, this.$childViewContainer, tmpl, child);
                 } else if (child === 'uid0') {
                     this.render(_path, this.viewContainer, tmpl, child, _child);
                 } else {
@@ -347,8 +345,8 @@
             var $path = _path.path;
             var $needToActived, $selectedElement, $activeLinks = [];
             var $getAllJamLinks, $strSplit;
-			var $storeClassNames;
-			var headReg; 
+            var $storeClassNames;
+            var headReg;
             var tailReg;
             var layerHeadReg;
             var layerTailReg;
@@ -357,7 +355,7 @@
             var currentHash;
             this.jamLinks = this.getElementByClassName('a', 'ajmLink');
             $getAllJamLinks = this.jamLinks;
-			//console.log(this.$hash + '             =====$hash');
+            //console.log(this.$hash + '             =====$hash');
 
             if (!this.$hash) {
                 this.$hash = '/home';
@@ -412,22 +410,22 @@
                         $activeLinks.push($getAllJamLinks[i]);
                     }
                 }
-				/*if ($selectedElement !== currentHash) {
-					if ($selectedElement === '/home' && currentHash.split('/')[2] === void 0) {
-						(function() {
-							for ( var ii = 0; ii < $getAllJamLinks.length; ii++ ) {
-								$storeClassNames = $getAllJamLinks[ii].className;
-								$storeClassNames = $storeClassNames.replace(/(ajmLink|\bon\b)*!/g, '');
-								$storeClassNames = 'ajmLink' + $storeClassNames;
-								$getAllJamLinks[ii].className = $storeClassNames;
-							}
-						}());
-						$activeLinks.push($getAllJamLinks[i]);
-					}
-					
-				}*/
-				
-				
+                /*if ($selectedElement !== currentHash) {
+                 if ($selectedElement === '/home' && currentHash.split('/')[2] === void 0) {
+                 (function() {
+                 for ( var ii = 0; ii < $getAllJamLinks.length; ii++ ) {
+                 $storeClassNames = $getAllJamLinks[ii].className;
+                 $storeClassNames = $storeClassNames.replace(/(ajmLink|\bon\b)*!/g, '');
+                 $storeClassNames = 'ajmLink' + $storeClassNames;
+                 $getAllJamLinks[ii].className = $storeClassNames;
+                 }
+                 }());
+                 $activeLinks.push($getAllJamLinks[i]);
+                 }
+
+                 }*/
+
+
                 if (headReg && tailReg) {
                     if (headReg[1] === tailReg[1]) {
                         (function() {
@@ -440,7 +438,7 @@
                         }());
                         $activeLinks.push($getAllJamLinks[i]);
                     }
-                    
+
                 }
             }
 
@@ -463,9 +461,9 @@
             var currentTitle = _path.title;
             var params = _path.params ? _path.params : !1;
             var cb = _path.callback ? _path.callback : !1;
-            var childViews;
+            var $childViews;
             var xhr = null;
-            var _this = this;
+            var $this = this;
             var childRoutes = _path.childRoutes;
 
             /*
@@ -478,37 +476,37 @@
              * 6. 要和指定api接口返回的数据进行整合,可在ko上下文中通过$.extend(apiResp, ko['$param'])====> ko.applayBindings(mergeData, target);
              * 7. ko上下文激活后，在模板中可通过上下文关键字进行数据访问, 比如：$parent.bindDatas...
              *
-            var local$param = localStorage.getItem('$param');
-            var $param, $this = this;
-            if (local$param) {
-                $param = JSON.parse(local$param);
-            } else {
-                $param = $this.$param ? $this.$param : {};
-            }
+             var local$param = localStorage.getItem('$param');
+             var $param, $this = this;
+             if (local$param) {
+             $param = JSON.parse(local$param);
+             } else {
+             $param = $this.$param ? $this.$param : {};
+             }
 
-            if (!ko.hasOwnProperty('ajmRouter')) {
-                ko['ajmRouter'] = _path;
-            } else {
-                ko['ajmRouter'] = _path;
-            }
-            if (!ko.hasOwnProperty(('$param'))) {
-                ko['$param'] = $param;
-            } else {
-                ko['$param'] = $param;
-            }*/
+             if (!ko.hasOwnProperty('ajmRouter')) {
+             ko['ajmRouter'] = _path;
+             } else {
+             ko['ajmRouter'] = _path;
+             }
+             if (!ko.hasOwnProperty(('$param'))) {
+             ko['$param'] = $param;
+             } else {
+             ko['$param'] = $param;
+             }*/
 
             xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function () {
-                var Links = _this.getElementByClassName('a', 'ajmLink');
+                var $ajmLinks = $this.getElementByClassName('a', 'ajmLink');
                 var apiUri = _path.apiUrl ? _path.apiUrl + '?' : '';
                 var pathParams;
 
                 if (xhr.readyState == 4 && xhr.status == 200) {
                     document.title = currentTitle;
 
-                    for (var ri = 0; ri < Links.length; ri++) {
-                        if (Links[ri].getAttribute('href').slice(1) === location.hash.slice(1)) {
-                            pathParams = eval("(" + Links[ri].getAttribute('params') + ")");
+                    for (var $ri = 0; $ri < $ajmLinks.length; $ri++) {
+                        if ($ajmLinks[$ri].getAttribute('href').slice(1) === location.hash.slice(1)) {
+                            pathParams = eval("(" + $ajmLinks[$ri].getAttribute('params') + ")");
                             break;
                         }
                     }
@@ -527,24 +525,24 @@
                         _path.beforeEnter(function (resp) {
                             document.title = currentTitle;
                             var local$param = localStorage.getItem('$param');
-                            var getTpl = xhr.responseText;
-                            var compileTpl = juicer(getTpl);
-                            var html;
-                            if (local$param && local$param != "undefined") {
-                                html = compileTpl.render($.extend(JSON.parse(local$param), resp));
-                            } else {
-                                html = compileTpl.render($.extend(_this.$param ? _this.$param : {}, resp));
-                            }
+                            var html = xhr.responseText;
+                            /*var compileTpl = juicer(getTpl);
+                             var html;
+                             if (local$param && local$param != "undefined") {
+                             html = compileTpl.render($.extend(JSON.parse(local$param), resp));
+                             } else {
+                             html = compileTpl.render($.extend($this.$param ? $this.$param : {}, resp));
+                             }*/
 
                             $(views).html(html);
 
                             if (child === 'uid0') {
 
-                                childViews = _this.viewContainer.getElementsByTagName('div');
-                                if (childViews) {
-                                    for (var c = 0; c < childViews.length; c++) {
-                                        if (childViews[c].getAttribute('id') === 'child-views') {
-                                            views = childViews[c];
+                                $childViews = $this.viewContainer.getElementsByTagName('div');
+                                if ($childViews) {
+                                    for (var $c = 0; $c < $childViews.length; $c++) {
+                                        if ($childViews[$c].getAttribute('id') === 'child-views') {
+                                            views = $childViews[$c];
                                             break;
                                         }
                                     }
@@ -552,67 +550,68 @@
 
 
                                 if (childRoutes) {
-                                    for (var r = 0; r < childRoutes.length; r++) {
-                                        if (childRoutes[r].path === _child) {
-                                            _path = childRoutes[r];
-                                            tmpl = childRoutes[r].url;
+                                    for (var $r = 0; $r < childRoutes.length; $r++) {
+                                        if (childRoutes[$r].path === _child) {
+                                            _path = childRoutes[$r];
+                                            tmpl = childRoutes[$r].url;
                                             break;
                                         }
                                     }
                                 }
 
-                                _this.render(_path, views, tmpl, 'uid1');
+                                $this.render(_path, views, tmpl, 'uid1');
                             }
                         })
                     } else {
                         +(function() {
                             var local$param = localStorage.getItem('$param');
-                            var getTpl = xhr.responseText;
-                            var compileTpl = juicer(getTpl);
-                            var html;
-                            if (local$param && local$param != "undefined") {
-                                html = compileTpl.render(JSON.parse(local$param));
-                            } else {
-                                html = compileTpl.render($this.$param ? _this.$param : {});
-                            }
+                            var html = xhr.responseText;
+                            /*
+                             var html = juicer(getTpl);
+                             var html;
+                             if (local$param && local$param != "undefined") {
+                             html = compileTpl.render(JSON.parse(local$param));
+                             } else {
+                             html = compileTpl.render($this.$param ? $this.$param : {});
+                             }*/
                             $(views).html(html);
                         })();
 
 
                         if (child === 'uid0') {
 
-                            childViews = _this.viewContainer.getElementsByTagName('div');
-                            if (childViews) {
-                                for (var c = 0; c < childViews.length; c++) {
-                                    if (childViews[c].getAttribute('id') === 'child-views') {
-                                        views = childViews[c];
+                            $childViews = $this.viewContainer.getElementsByTagName('div');
+                            if ($childViews) {
+                                for (var $c = 0; $c < $childViews.length; $c++) {
+                                    if ($childViews[$c].getAttribute('id') === 'child-views') {
+                                        views = $childViews[$c];
                                     }
                                 }
                             }
 
 
                             if (childRoutes) {
-                                for (var r = 0; r < childRoutes.length; r++) {
-                                    if (childRoutes[r].path === _child) {
-                                        _path = childRoutes[r];
-                                        tmpl = childRoutes[r].url;
+                                for (var $r = 0; $r < childRoutes.length; $r++) {
+                                    if (childRoutes[$r].path === _child) {
+                                        _path = childRoutes[$r];
+                                        tmpl = childRoutes[$r].url;
                                     }
                                 }
                             }
 
-                            _this.render(_path, views, tmpl, 'uid1');
+                            $this.render(_path, views, tmpl, 'uid1');
                         }
                     }
 
 
-                    _this.addAnimateHandler(views, 'opacity', 1, function () {
+                    $this.addAnimateHandler(views, 'opacity', 1, function () {
                     });
 
 
                     var timer = setTimeout(function () {
 
                         cb && cb(_path.path, params);
-                        _this.addHighlightHandler(_path);
+                        $this.addHighlightHandler(_path);
                         clearTimeout(timer);
                     }, 0);
 
@@ -627,20 +626,20 @@
 
         },
         go: function (path) {
-            var _this = this;
+            var $this = this;
             +(function () {
                 if (!path.$param || (typeof path.$param === 'object' && Object.prototype.toString.call(path.$param) !== '[object Object]')) {
 
                     return;
                 } else {
 
-                    _this.$param =  path.$param;
+                    $this.$param =  path.$param;
                     localStorage.setItem('$param', JSON.stringify(path.$param));
                 }
 
             })();
 
-             location.hash = path.path;
+            location.hash = path.path;
         },
 
         setLocalStorage: function (path) {
@@ -663,7 +662,7 @@
          */
         addAnimateHandler: function (obj, attr, target, callback, delay) {
 
-            var _this = this;
+            var $this = this;
             if (attr == 'opacity') {
                 target = target * 100;
             }
@@ -672,7 +671,7 @@
                 var base = Math.floor(Math.random() * 4) + 17;
                 var speed;
 
-                dest = _this.getComputedStyle(obj, attr);
+                dest = $this.getComputedStyle(obj, attr);
                 speed = (target - dest) / base;
                 speed = speed > 0 ? Math.ceil(speed) : Math.floor(speed);
                 if (target === dest) {
