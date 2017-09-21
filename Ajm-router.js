@@ -142,22 +142,21 @@
          */
         initHashAction: function () {
 
-            var $hash = this.getHash();
-            var $ajmRoutes = this.options['routes'] || [];
-            var $len = $ajmRoutes.length;
-            var $splitHash = $hash.split('/');
-            var $child = $splitHash[2];
-            var $childViews = this.viewContainer.getElementsByTagName('div');
-            var $ajmLinks = this.getElementByClassName('a', 'ajmLink');
-            var $childRoutes;
-            var $childViewContainer;
-            var $parentpath;
-            var $defaultViews;
-            var $getRouteparams;
-            if ($splitHash[1] === undefined) {
-                $hash = '';
+            var hash = this.getHash();
+            var Routes = this.options['routes'] || [];
+            var len = Routes.length;
+            var splitHash = hash.split('/');
+            var child = splitHash[2];
+            var childViews = this.viewContainer.getElementsByTagName('div');
+            var Links = this.getElementByClassName('a', 'ajmLink');
+            var childRoutes;
+            var childViewContainer;
+            var parentpath;
+            var defaultViews;
+            if (splitHash[1] === undefined) {
+                hash = '';
             } else {
-                $hash = '/' + $splitHash[1];
+                hash = '/' + splitHash[1];
             }
             // var $index = this.$track.indexOf($hash);
 
@@ -169,58 +168,58 @@
              }*/
 
 
-            this.$hash = $hash;
-            this.$child = $child;
-            if ($hash) {
+            this.$hash = hash;
+            this.$child = child;
+            if (hash) {
 
-                if ($splitHash.length === 2) {
+                if (splitHash.length === 2) {
 
-                    for (var check = 0; check < $ajmRoutes.length; check++) {
-                        if ($ajmRoutes[check].path === $hash) {
-                            $defaultViews = $ajmRoutes[check].childRoutes;
+                    for (var check = 0; check < Routes.length; check++) {
+                        if (Routes[check].path === hash) {
+                            defaultViews = Routes[check].childRoutes;
                             break;
                         }
                     }
 
-                    if ($defaultViews) {
-                        location.hash = $hash + $defaultViews[0].path;
+                    if (defaultViews) {
+                        location.hash = hash + defaultViews[0].path;
                     } else {
                         this.viewContainer.style['opacity'] = 0;
-                        this.firstRender($hash, $ajmRoutes);
+                        this.firstRender(hash, Routes);
                     }
 
                 } else {
 
                     if (!this.isContainsChildView(this.viewContainer, 'child-views')) {
 
-                        this.firstRender($hash, $ajmRoutes, 'uid0', '/' + $child);
+                        this.firstRender(hash, Routes, 'uid0', '/' + child);
                     } else {
                         this.viewContainer.style['opacity'] = 1;
-                        for (var $element = 0; $element < $childViews.length; $element++) {
-                            if ($childViews[$element].getAttribute('id') === 'child-views') {
-                                $childViews[$element].style.opacity = 0;
-                                $childViewContainer = $childViews[$element];
+                        for (var element = 0; element < childViews.length; element++) {
+                            if (childViews[element].getAttribute('id') === 'child-views') {
+                                childViews[element].style.opacity = 0;
+                                childViewContainer = childViews[element];
                                 break;
                             }
                         }
-                        for (var $windex = 0; $windex < $len; $windex++) {
-                            $parentpath = $ajmRoutes[$windex].path;
-                            if ($ajmRoutes[$windex].childRoutes) {
-                                $childRoutes = $ajmRoutes[$windex].childRoutes;
+                        for (var windex = 0; windex < len; windex++) {
+                            parentpath = Routes[windex].path;
+                            if (Routes[windex].childRoutes) {
+                                childRoutes = Routes[windex].childRoutes;
                             } else {
                                 continue;
                             }
-                            $childRoutes = $ajmRoutes[$windex].childRoutes;
-                            for (var $iindex = 0; $iindex < $childRoutes.length; $iindex++) {
-                                if ($parentpath + $childRoutes[$iindex].path === location.hash.slice(1)) {
-                                    this.$childViewContainer = $childViewContainer;
+                            childRoutes = Routes[windex].childRoutes;
+                            for (var iindex = 0; iindex < childRoutes.length; iindex++) {
+                                if (parentpath + childRoutes[iindex].path === location.hash.slice(1)) {
+                                    this.childViewContainer = childViewContainer;
 
-                                    var isMatch = this.getMatch(location.hash, $ajmLinks);
-                                    if (this.$childViewContainer && isMatch) {
+                                    var isMatch = this.getMatch(location.hash, Links);
+                                    if (this.childViewContainer && isMatch) {
 
-                                        this.addHashHandler($childRoutes[$iindex], 'uid1', $child);
+                                        this.addHashHandler(childRoutes[iindex], 'uid1', child);
                                     } else {
-                                        this.firstRender($parentpath, $ajmRoutes, 'uid0', '/' + $child);
+                                        this.firstRender(parentpath, Routes, 'uid0', '/' + child);
                                     }
 
                                 }
@@ -230,11 +229,11 @@
                 }
             }
 
-            if (!$hash) {
+            if (!hash) {
 
-                for (var $i = 0; $i < $len; $i++) {
-                    if ($ajmRoutes[$i].path === '/home') {
-                        this.addHashHandler($ajmRoutes[$i]);
+                for (var i = 0; i < len; i++) {
+                    if (Routes[i].path === '/home') {
+                        this.addHashHandler(Routes[i]);
                     }
                 }
             }
@@ -273,13 +272,13 @@
             return isTrue;
         },
 
-        firstRender: function ($hash, $routes, child, _child) {
+        firstRender: function (hash, routes, child, _child) {
 
-            var $len = $routes.length;
+            var len = routes.length;
             // this.viewContainer.style['opacity'] = 0;
-            for (var $index = 0; $index < $len; $index++) {
-                if ($hash === $routes[$index].path) {
-                    this.addHashHandler($routes[$index], child, _child);
+            for (var index = 0; index < len; index++) {
+                if (hash === routes[index].path) {
+                    this.addHashHandler(routes[index], child, _child);
                 }
             }
         },
@@ -291,14 +290,14 @@
          */
         addHashHandler: function (_path, child, _child) {
 
-            var $path = _path.path;
-            var $this = this;
-            var $local;
+            var path = _path.path;
+            var this = this;
+            var local;
             var tmpl = _path.url;
 
             this.addHighlightHandler(_path);
             $local = this.getLocalStorage('route');
-            if (!$local) {
+            if (!local) {
                 this.setLocalStorage(_path.path);
             }
 
@@ -308,13 +307,13 @@
              *
              */
             if (this.beforeEnter && typeof this.beforeEnter === 'function') {
-                this.beforeEnter($local, _path, function (cbpath) {
+                this.beforeEnter(local, _path, function (cbpath) {
                     $this.go(cbpath);
                 }, this.addConfirmHandler);
             } else {
 
                 if (child === 'uid1') {
-                    this.render(_path, this.$childViewContainer, tmpl, child);
+                    this.render(_path, this.childViewContainer, tmpl, child);
                 } else if (child === 'uid0') {
                     this.render(_path, this.viewContainer, tmpl, child, _child);
                 } else {
