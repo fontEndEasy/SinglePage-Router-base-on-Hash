@@ -62,7 +62,7 @@
 
         this.options = options;
         this.init();
-        this.viewContainer = document.getElementById('views');
+        this.viewContainer = document.getElementById(this.options['views']);
         this.$track = [];
     };
 
