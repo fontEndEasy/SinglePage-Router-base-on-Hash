@@ -7,7 +7,7 @@
 #### 使用方式：
 
 
-```html
+```javascript
 > 引入jquery.js 和 routes.conf.js配置文件，该文件可根据业务需求进行定制
 
 > var router = new Router({routes: routes, routerLinkActive: ' on'}); // 实例化路由
