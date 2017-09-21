@@ -9,7 +9,7 @@
      * @Author zhuxl
      * @Subject String '辅助工具'
      * @Function { Object }
-     * @Comment string:'$AjmRouter是基于hash封装的路由框架，目前功能：
+     * @Comment string:'Router是基于hash封装的路由框架，目前功能：
      * 1. 可自定义路由路径，
      * 2. 路由之间可进行参数传递，
      * 3. 每个路由的业务逻辑在对应配置回调中进行，
