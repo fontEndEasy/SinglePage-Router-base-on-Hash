@@ -1,9 +1,9 @@
-(function (global, AjmRouter) {
+(function (global, Router) {
 
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = AjmRouter() :
-        typeof define === 'function' && define.amd ? define(AjmRouter) :
-            (global.AjmRouter = AjmRouter());
-}(this, function AjmRouter() {
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = Router() :
+        typeof define === 'function' && define.amd ? define(Router) :
+            (global.Router = Router());
+}(this, function Router() {
     /*
      * @Date 2017.07.26
      * @Author zhuxl
@@ -58,7 +58,7 @@
         return !value ? '' : typeof value === 'object' ? JSON.stringify(val, null, 2) : String(value);
     };
 
-    function $AjmRouter(options) {
+    function Router(options) {
 
         this.options = options;
         this.init();
@@ -67,8 +67,8 @@
     };
 
 
-    $AjmRouter.prototype = {
-        constructor: $AjmRouter,
+    Router.prototype = {
+        constructor: Router,
 
         /*
          * @Function { Object }
