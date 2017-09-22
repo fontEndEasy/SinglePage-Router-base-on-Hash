@@ -62,7 +62,7 @@
 
         this.options = options;
         this.init();
-        this.viewContainer = document.getElementById(this.options['views']);
+        this.viewContainer = $('.' + this.options['views'])[0];
         this.$track = [];
     };
 
@@ -142,7 +142,7 @@
          */
         initHashAction: function () {
 
-            var hash = window.location.hash.slice(1);
+            var hash = this.getHash();
             var routes = this.options['routes'];
             var len = routes.length;
             var splitHash = hash.split('/');
@@ -196,9 +196,9 @@
                     } else {
                         this.viewContainer.style['opacity'] = 1;
                         for (var element = 0; element < childViews.length; element++) {
-                            if ($childViews[element].getAttribute('id') === 'child-views') {
-                                $childViews[element].style.opacity = 0;
-                                $childViewContainer = $childViews[element];
+                            if (childViews[element].getAttribute('id') === 'child-views') {
+                                childViews[element].style.opacity = 0;
+                                childViewContainer = childViews[element];
                                 break;
                             }
                         }
@@ -210,16 +210,16 @@
                                 continue;
                             }
                             childRoutes = routes[windex].childRoutes;
-                            for (var iindex = 0; iindex < childRoutes.length; $iindex++) {
+                            for (var iindex = 0; iindex < childRoutes.length; iindex++) {
                                 if (parentpath + childRoutes[iindex].path === location.hash.slice(1)) {
                                     this.$childViewContainer = childViewContainer;
 
                                     var isMatch = this.getMatch(location.hash, links);
                                     if (this.$childViewContainer && isMatch) {
 
-                                        this.addHashHandler($childRoutes[$iindex], 'uid1', child);
+                                        this.addHashHandler(childRoutes[iindex], 'uid1', child);
                                     } else {
-                                        this.firstRender($parentpath, $ajmRoutes, 'uid0', '/' + child);
+                                        this.firstRender(parentpath, routes, 'uid0', '/' + child);
                                     }
 
                                 }
@@ -238,6 +238,9 @@
                     }
                 }
             }
+        },
+        getHash: function () {
+          return location.hash.slice(1);
         },
         getMatch: function (hash, links) {
             var layerTailReg = /\w+\/(\w+)$/g;
@@ -342,10 +345,9 @@
         },
         addHighlightHandler: function (_path) {
 
-            var $path = _path.path;
-            var $needToActived, $selectedElement, $activeLinks = [];
-            var $getAllJamLinks, $strSplit;
-            var $storeClassNames;
+            var needToActived, selectedElement, activeLinks = [];
+            var getLinks, $strSplit;
+            var storeClassName;
             var headReg;
             var tailReg;
             var layerHeadReg;
@@ -353,100 +355,97 @@
             var layer0;
             var layer2Reg;
             var currentHash;
-            this.jamLinks = this.getElementByClassName('a', 'ajmLink');
-            $getAllJamLinks = this.jamLinks;
-            //console.log(this.$hash + '             =====$hash');
+
+                getLinks = this.getElementByClassName('a', 'ajmLink');
 
             if (!this.$hash) {
                 this.$hash = '/home';
             }
 
-            // location.hash.slice(1)
-            for (var i = 0; i < $getAllJamLinks.length; i++) {
-                $needToActived = $getAllJamLinks[i];
-                $selectedElement = $needToActived.getAttribute('href').slice(1);
-                $strSplit = $selectedElement.split('/');
-                currentHash = location.hash.slice(1);
+            for (var i = 0; i < getLinks.length; i++) {
+                needToActived = getLinks[i];
+                selectedElement = needToActived.getAttribute('href').slice(1);
+                strSplit = selectedElement.split('/');
+                currentHash = this.getHash();
 
                 layerHeadReg = /(\w+)[A-Z]\w+$/g;
                 layerTailReg = /\w+\/(\w+)$/g;
                 layer2Reg = /(\w+)[A-Z]\w+$/g;
 
                 headReg = layerHeadReg.exec(currentHash);
-                tailReg = layerTailReg.exec($selectedElement);
-                layer0 = layer2Reg.exec($selectedElement);
+                tailReg = layerTailReg.exec(selectedElement);
+                layer0 = layer2Reg.exec(selectedElement);
 
-                if ('/' + $strSplit[1] === this.$hash && $strSplit[2] === void 0) {
-                    for ( var $n = 0; $n < $getAllJamLinks.length; $n++) {
-                        $storeClassNames = $getAllJamLinks[$n].className;
-                        $storeClassNames = $storeClassNames.replace(/(ajmLink|\bon\b)*/g, '');
-                        $storeClassNames = 'ajmLink' + $storeClassNames;
-                        $getAllJamLinks[$n].className = $storeClassNames;
+                if ('/' + strSplit[1] === this.$hash && strSplit[2] === void 0) {
+                    for ( var $n = 0; $n < getLinks.length; $n++) {
+                        storeClassName = getLinks[$n].className;
+                        storeClassName = storeClassName.replace(/(ajmLink|\bon\b)*/g, '');
+                        storeClassName = 'ajmLink' + storeClassName;
+                        getLinks[$n].className = storeClassName;
                     }
-                    $activeLinks.push($getAllJamLinks[i]);
+                    activeLinks.push(getLinks[i]);
                 }
 
-                if ($selectedElement === currentHash) {
-                    for ( var ii = 0; ii < $getAllJamLinks.length; ii++ ) {
-                        $storeClassNames = $getAllJamLinks[ii].className;
-                        $storeClassNames = $storeClassNames.replace(/(ajmLink|\bon\b)*/g, '');
-                        $storeClassNames = 'ajmLink' + $storeClassNames;
-                        $getAllJamLinks[ii].className = $storeClassNames;
+                if (selectedElement === currentHash) {
+                    for ( var ii = 0; ii < getLinks.length; ii++ ) {
+                        storeClassName = getLinks[ii].className;
+                        storeClassName = storeClassName.replace(/(ajmLink|\bon\b)*/g, '');
+                        storeClassName = 'ajmLink' + storeClassName;
+                        getLinks[ii].className = storeClassName;
                     }
-                    $activeLinks.push($getAllJamLinks[i]);
+                    activeLinks.push(getLinks[i]);
                 }
 
                 if (layer0) {
                     if ('/' + layer0[1] === this.$hash) {
                         (function () {
-                            for ( var ii = 0; ii < $getAllJamLinks.length; ii++ ) {
-                                $storeClassNames = $getAllJamLinks[ii].className;
-                                $storeClassNames = $storeClassNames.replace(/(ajmLink|\bon\b)*/g, '');
-                                $storeClassNames = 'ajmLink' + $storeClassNames;
-                                $getAllJamLinks[ii].className = $storeClassNames;
+                            for ( var ii = 0; ii < getLinks.length; ii++ ) {
+                                storeClassName = getLinks[ii].className;
+                                storeClassName = storeClassName.replace(/(ajmLink|\bon\b)*/g, '');
+                                storeClassName = 'ajmLink' + storeClassName;
+                                getLinks[ii].className = storeClassName;
                             }
 
                         }());
-                        $activeLinks.push($getAllJamLinks[i]);
+                        activeLinks.push(getLinks[i]);
                     }
                 }
-                /*if ($selectedElement !== currentHash) {
-                 if ($selectedElement === '/home' && currentHash.split('/')[2] === void 0) {
-                 (function() {
-                 for ( var ii = 0; ii < $getAllJamLinks.length; ii++ ) {
-                 $storeClassNames = $getAllJamLinks[ii].className;
-                 $storeClassNames = $storeClassNames.replace(/(ajmLink|\bon\b)*!/g, '');
-                 $storeClassNames = 'ajmLink' + $storeClassNames;
-                 $getAllJamLinks[ii].className = $storeClassNames;
-                 }
-                 }());
-                 $activeLinks.push($getAllJamLinks[i]);
-                 }
+                /*if (selectedElement !== currentHash) {
+                     if (selectedElement === '/home' && currentHash.split('/')[2] === void 0) {
+                         (function() {
+                            for ( var ii = 0; ii < getLinks.length; ii++ ) {
+                                storeClassName = getLinks[ii].className;
+                                storeClassName = storeClassName.replace(/(ajmLink|\bon\b)*!/g, '');
+                                storeClassName = 'ajmLink' + storeClassName;
+                                getLinks[ii].className = storeClassName;
+                             }
+                         }());
+                        activeLinks.push(getLinks[i]);
+                     }
 
                  }*/
-
 
                 if (headReg && tailReg) {
                     if (headReg[1] === tailReg[1]) {
                         (function() {
-                            for (var i = 0; i < $getAllJamLinks.length; i++) {
-                                storeClassName = $getAllJamLinks[i].className;
+                            for (var i = 0; i < getLinks.length; i++) {
+                                storeClassName = getLinks[i].className;
                                 storeClassName = storeClassName.replace(/(ajmLink|\bon\b)*/g, '');
                                 storeClassName = 'ajmLink' + storeClassName;
-                                $getAllJamLinks[i].className = storeClassName;
+                                getLinks[i].className = storeClassName;
                             }
                         }());
-                        $activeLinks.push($getAllJamLinks[i]);
+                        activeLinks.push(getLinks[i]);
                     }
 
                 }
             }
 
-            for (var $i = 0; $i < $activeLinks.length; $i++) {
-                if (!$activeLinks[$i]) {
+            for (var $i = 0; $i < activeLinks.length; $i++) {
+                if (!activeLinks[$i]) {
                     return
                 } else {
-                    $activeLinks[$i].className += this.options['routerLinkActive'];
+                    activeLinks[$i].className += this.options['routerLinkActive'];
                 }
             }
         },
